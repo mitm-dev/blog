@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html id="ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8) ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+<base href="/" />
+
+	<meta charset="UTF-8" />
+	<title>The Journey to Short XSS Payload | Man in the Middle</title>
+	
+	
+	<!--[if lt IE 9]>
+	<script src="contents/ui/theme/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	
+
+
+
+<link rel='stylesheet' id='parament-css'  href='contents/ui/theme/style.css' type='text/css' media='all' />
+<script type='text/javascript' src='inc/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='inc/js/jquery/jquery-migrate.min.js'></script>
+
+
+
+
+
+
+
+
+		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+			<style type="text/css">
+			#branding {
+			overflow: hidden;
+			position: relative;
+			width: 820px;
+			height: 164px;
+		}
+		#site-title,
+		#site-description {
+			position: relative;
+			margin-left: 50px;
+			z-index: 2;
+		}
+		#site-title {
+			margin-top: 60px;
+		}
+		#site-description {
+			display: block;
+		}
+		#header-image {
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 820px;
+			height: 164px;
+			z-index: 1;
+		}
+			#site-title,
+		#site-description {
+			position: absolute;
+			clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+			clip: rect(1px, 1px, 1px, 1px);
+		}
+		</style>
+	<style type="text/css" id="syntaxhighlighteranchor"></style>
+
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts.php'></script> 
+</head>
+
+<body class="post-template-default single single-post postid-154 single-format-standard has-image">
+
+<div id="page-wrap" class="contain">
+	<header id="branding" role="banner">
+		<h1 id="site-title"><a href="">Man in the Middle</a></h1>
+		
+					<a id="header-image" href=""><img src="contents/data/2015/02/logo.png" alt="" /></a>
+			</header><!-- #branding -->
+
+	<nav id="menu" role="navigation"><ul id="primary-menu" class="menu"><li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13"><a title="Useful Free Tools for Penetration Testing" href="tools-for-pentest/">Tools</a></li>
+<li id="menu-item-24" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24"><a href="useful-links/">Useful Links</a></li>
+<li id="menu-item-26" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-26"><a href="https://github.com/mitm-dev">mitm on GitHub</a></li>
+<li id="menu-item-164" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164"><a href="https://twitter.com/RealMitM">@RealMitM</a></li>
+</ul></nav>
+<div id="container" class="contain">
+	<div id="main" role="main">
+													
+<article id="post-154" class="contain post-154 post type-post status-publish format-standard hentry category-web-applications category-xss has-byline">
+
+	<div class="title">
+					<h2 class="entry-title">The Journey to Short XSS Payload</h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="the-journey-to-short-xss-payload/">13/09/2016</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/web-applications/" rel="category tag">Web Applications</a>, <a href="category/xss/" rel="category tag">XSS</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p><strong>TL;DR</strong> &#8211; Using Unicode Normalization for short domain names. Example: <code>&lt;iframe src=//㎉.ga&gt;</code></p>
+<p><img class="alignnone wp-image-172" src="http://mitm.co.il/contents/data/2016/09/UnicodeDomainSearch-300x50.png" alt="unicodedomainsearch" width="666" height="111" srcset="contents/data/2016/09/UnicodeDomainSearch-300x50.png 300w, contents/data/2016/09/UnicodeDomainSearch-768x129.png 768w, contents/data/2016/09/UnicodeDomainSearch.png 856w" sizes="(max-width: 666px) 100vw, 666px" /></p>
+<h2>Motivation</h2>
+<p>Sometime during a web application testing I come across an input value with length restriction.</p>
+<p>I am not talking of course about html parameter <code>maxlength</code> which you can easily bypass. The real problem comes when the server-side code limits the length of your payload.</p>
+<p>There are some great articles about short XSS payload (you can find links at the bottom), and I decided to focus on getting short domain name without spending a lot of money.</p>
+<p>Buying a short domain name is an expensive business. For example <code>r.top</code> can cost you $194,596.97/year <a href="https://www.namecheap.com/domains/registration/results.aspx?domain=r">here </a></p>
+<p>For those of us that can&#8217;t afford one letter domain I can suggest using Unicode Normalization. This technique can help us by using a longer domain name with the same amount of (Unicode) characters.</p>
+<h2>What is Unicode Normalization?</h2>
+<p><span id="more-154"></span></p>
+<p>Some of the Unicode characters are more complex than ASCII characters so in the normalization process one Unicode character can convert to multiple ASCII characters. For example the Unicode character <code>Ⅵ</code> (U+2165) will be converted to ASCII <code>vi</code>. You can try this your self – enter in the URL <a href="http://Ⅵ.com">http://Ⅵ.com</a> and your browser will access the website at <a href="http://vi.com">http://vi.com</a></p>
+<p>The idea of using a single Unicode character for shorter URLs is <a href="https://patzke.org/files/OWASP_Cologne-20141030-Unicode.pdf">nothing new</a> and recently I did a little research in order to find the best and cheapest way to acquire a short domain using Unicode characters.</p>
+<h2>Cost-Effective Domain Names</h2>
+<p>First of all I had to find some Unicode characters that contain multiple characters after normalization. To accomplish that I wrote a little C# program that normalize all Unicode characters and count the length of the result. You can find the source code <a href="https://gist.github.com/mitm-dev/776b94634af2d44b2a2338affcf689c9">here</a></p>
+<p><img class="alignnone wp-image-171" src="http://mitm.co.il/contents/data/2016/09/findLongUnicode-300x81.png" alt="findlongunicode" width="474" height="128" srcset="contents/data/2016/09/findLongUnicode-300x81.png 300w, contents/data/2016/09/findLongUnicode-768x208.png 768w, contents/data/2016/09/findLongUnicode.png 861w" sizes="(max-width: 474px) 100vw, 474px" /></p>
+<p>I got 72 matches, but only 3 of them contains only simple ASCII English characters and can be used in a domain name:</p>
+<p><code>U+2167 - VIII<br />
+U+2177 - viii<br />
+U+3389 - kcal</code></p>
+<p>Since domain names are case insensitive, we have only 2 viable options: <code>viii</code> and <code>kcal</code>.</p>
+<h2>Even Shorter &#8211; Domain Suffixes</h2>
+<p>In order to find the shortest possible domain name I looked also on domain suffixes. If we can find single Unicode character that converted to a valid domain suffix after normalization, we can get even shorter domain name.</p>
+<p>So my next step was to get a list of all domain suffixes. After some google search and text formatting I got a long text file contains all available domain suffixes. You can find the file <a href="https://gist.github.com/mitm-dev/9b4ed9c80859bef1ccfd5c27994798ee">here</a>. I wrote another little C# program that normalize all Unicode characters and compare them to my domain suffixes list. You can find source code <a href="https://gist.github.com/mitm-dev/7f44a7ee703e7f6a319d7d28c9358a5a">here</a></p>
+<p><img class="alignnone wp-image-170" src="http://mitm.co.il/contents/data/2016/09/UnicodeDomainSuffixes-300x94.png" alt="unicodedomainsuffixes" width="517" height="162" srcset="contents/data/2016/09/UnicodeDomainSuffixes-300x94.png 300w, contents/data/2016/09/UnicodeDomainSuffixes-768x240.png 768w, contents/data/2016/09/UnicodeDomainSuffixes-1024x320.png 1024w, contents/data/2016/09/UnicodeDomainSuffixes.png 1033w" sizes="(max-width: 517px) 100vw, 517px" /></p>
+<p>It turns out that there are 10 Unicode characters that are valid domain suffixes after normalization:</p>
+<p><code>U+33D7 - PH<br />
+U+32CF - LTD<br />
+U+3399 - fm<br />
+U+339D - cm<br />
+U+33B3 - ms<br />
+U+33BA - pW<br />
+U+33C4 - cc<br />
+U+33C9 - Gy<br />
+U+33CC - in<br />
+U+3374 - bar</code></p>
+<h2>Summary</h2>
+<p>In conclusion it is completely possible to purchase a relatively long domain (7 characters) and shorten it using Unicode characters to just 3 characters. For example <code>viii.ms</code> (7 characters) or in Unicode: <code>ⅷ.㎳</code> (3 characters)</p>
+<p>Another great option is using free domains. for example by using <a href="http://www.freenom.com">http://www.freenom.com</a> you can register a free domain with a short suffix such as <code>.tk</code></p>
+<p>You can use <code>㎉.ga</code> for POC by inducing in your XSS payload something like this: <code>&lt;iframe src=//㎉.ga&gt;</code></p>
+<p>Have Fun and Happy Hacking</p>
+	</div>
+
+		<nav id="post-nav" class="contain">
+		<h1 class="assistive-text">Posts navigation</h1>
+		<div class="nav-older">&larr; <a href="javascript-automated-file-deliverer/" rel="prev">JavaScript Automated File Deliverer</a></div>			</nav>
+	
+</article>				
+<div id="comments">
+
+	
+	
+</div><!-- #comments -->						</div><!-- end main -->
+
+	<ul id="sidebar" role="complementary">
+	<li id="search-2" class="widget widget_search"><form role="search" method="get" id="searchform" class="searchform" action="">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Search" />
+				</div>
+			</form></li>		<li id="recent-posts-2" class="widget widget_recent_entries">		<h2 class="widget-title">Recent Posts</h2>		<ul>
+											<li>
+					<a href="the-journey-to-short-xss-payload/">The Journey to Short XSS Payload</a>
+									</li>
+											<li>
+					<a href="javascript-automated-file-deliverer/">JavaScript Automated File Deliverer</a>
+									</li>
+											<li>
+					<a href="arp-watcher/">Arp Watcher &#8211; Is someone trying to poison you?</a>
+									</li>
+											<li>
+					<a href="start-with-zerowine/">Zero Wine &#8211; An easy sandbox for malware analysis</a>
+									</li>
+											<li>
+					<a href="metasploit-101-part7/">Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</a>
+									</li>
+					</ul>
+		</li><li id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"></ul></li><li id="archives-2" class="widget widget_archive"><h2 class="widget-title">Archives</h2>		<ul>
+			<li><a href='2016/09/'>September 2016</a></li>
+	<li><a href='2016/03/'>March 2016</a></li>
+	<li><a href='2015/06/'>June 2015</a></li>
+	<li><a href='2015/04/'>April 2015</a></li>
+	<li><a href='2015/02/'>February 2015</a></li>
+	<li><a href='2015/01/'>January 2015</a></li>
+		</ul>
+		</li><li id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+	<li class="cat-item cat-item-9"><a href="category/arp-poisoning/" >ARP Poisoning</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="category/general/" >General</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="category/malware-analysis/" >Malware Analysis</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="category/man-in-the-middle/" >Man in the middle</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="category/metasploit/" >Metasploit</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="category/password-cracking/" >Password Cracking</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="category/post-exploitation/" >Post Exploitation</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="category/source-code/" >Source Code</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="category/tools/" >Tools</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="category/web-applications/" >Web Applications</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="category/xss/" >XSS</a>
+</li>
+		</ul>
+</li></ul><!-- end sidebar -->
+</div><!-- end container -->
+
+
+</div><!-- end page-wrap -->
+<footer id="colophon" role="contentinfo">
+	<div id="site-generator">
+		<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a>
+		Theme: Parament by <a href="http://automattic.com/" rel="designer">Automattic</a>.	</div>
+</footer>
+
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+r3f5x9JS=escape(document['referrer']);
+hf4N='e1b36f67163371db3a1e78a6623d2b7a';
+hf4V='bd2d1ca02b02f99b8aca0a8e177af509';
+jQuery(document).ready(function($){var e="#commentform, .comment-respond form, .comment-form, #lostpasswordform, #registerform, #loginform, #login_form, #wpss_contact_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","r3f5x9JS").attr("value",r3f5x9JS).appendTo(e);$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);return true;});$("#comment").attr({minlength:"15",maxlength:"15360"})});
+/* ]]> */
+</script> 
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts-ftr-min.js'></script>
+
+</body>
+</html>

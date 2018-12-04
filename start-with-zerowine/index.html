@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html id="ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8) ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+<base href="/" />
+
+	<meta charset="UTF-8" />
+	<title>Zero Wine &#8211; An easy sandbox for malware analysis | Man in the Middle</title>
+	
+	
+	<!--[if lt IE 9]>
+	<script src="contents/ui/theme/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	
+
+
+
+<link rel='stylesheet' id='parament-css'  href='contents/ui/theme/style.css' type='text/css' media='all' />
+<script type='text/javascript' src='inc/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='inc/js/jquery/jquery-migrate.min.js'></script>
+
+
+
+
+
+
+
+
+
+		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+			<style type="text/css">
+			#branding {
+			overflow: hidden;
+			position: relative;
+			width: 820px;
+			height: 164px;
+		}
+		#site-title,
+		#site-description {
+			position: relative;
+			margin-left: 50px;
+			z-index: 2;
+		}
+		#site-title {
+			margin-top: 60px;
+		}
+		#site-description {
+			display: block;
+		}
+		#header-image {
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 820px;
+			height: 164px;
+			z-index: 1;
+		}
+			#site-title,
+		#site-description {
+			position: absolute;
+			clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+			clip: rect(1px, 1px, 1px, 1px);
+		}
+		</style>
+	<style type="text/css" id="syntaxhighlighteranchor"></style>
+
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts.php'></script> 
+</head>
+
+<body class="post-template-default single single-post postid-108 single-format-standard has-image">
+
+<div id="page-wrap" class="contain">
+	<header id="branding" role="banner">
+		<h1 id="site-title"><a href="">Man in the Middle</a></h1>
+		
+					<a id="header-image" href=""><img src="contents/data/2015/02/logo.png" alt="" /></a>
+			</header><!-- #branding -->
+
+	<nav id="menu" role="navigation"><ul id="primary-menu" class="menu"><li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13"><a title="Useful Free Tools for Penetration Testing" href="tools-for-pentest/">Tools</a></li>
+<li id="menu-item-24" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24"><a href="useful-links/">Useful Links</a></li>
+<li id="menu-item-26" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-26"><a href="https://github.com/mitm-dev">mitm on GitHub</a></li>
+<li id="menu-item-164" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164"><a href="https://twitter.com/RealMitM">@RealMitM</a></li>
+</ul></nav>
+<div id="container" class="contain">
+	<div id="main" role="main">
+													
+<article id="post-108" class="contain post-108 post type-post status-publish format-standard hentry category-malware-analysis category-tools has-byline">
+
+	<div class="title">
+					<h2 class="entry-title">Zero Wine &#8211; An easy sandbox for malware analysis</h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="start-with-zerowine/">06/04/2015</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/malware-analysis/" rel="category tag">Malware Analysis</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p><a href="http://zerowine.sourceforge.net/" target="_blank">Zero Wine</a> is a simple yet powerful open source sandbox for malware analysis.</p>
+<p>It uses Wine on Linux to run windows EXE files in a monitored virtual machine.</p>
+<h3><strong>Notice &#8211; Wine is NOT full sandbox! malwares CAN ESCAPE to OS! Use with caution!</strong></h3>
+<p>I recommend using the fork <a href="http://zerowine-tryout.sourceforge.net/" target="_blank">Zero Wine Tryouts</a><br />
+It has a prebuilt VMware image ready for download and its quite effective and easy to use.</p>
+<p>However there are some important details missing from the documentation on the website,<br />
+so here it is:<br />
+<span id="more-108"></span></p>
+<p><span style="text-decoration: underline;"><strong>All you need to know in order to start using Zero Wine Tryouts</strong></span></p>
+<ul>
+<li>Install VMware player / workstation</li>
+<li>Download the <a href="http://downloads.sourceforge.net/zerowine-tryout/zerowine-tryout-alpha5-image.7z" target="_blank">VMware image</a></li>
+<li>extract the 7z file and start the VM</li>
+<li>login to console with:</li>
+</ul>
+<p><code>user name: root</code><br />
+<code>password: zerowine1</code></p>
+<ul>
+<ul>
+<li>you also can login as:<br />
+<code>user name: malware</code><br />
+<code>password: malware1</code></li>
+</ul>
+</ul>
+<ul>
+<li>Set IP and default gateway using:<br />
+<code>mcedit /etc/network/interfaces</code><br />
+and edit the interfaces file to match your IP range and default gateway</li>
+</ul>
+<ul>
+<li>Apply the changes with:<br />
+<code>ifdown -a</code><br />
+<code>ifup -a</code></li>
+</ul>
+<p>Now you can access the web interface on URL: <code>http://&lt;your-zerowine-ip&gt;:8000</code><br />
+and upload your malware files:</p>
+<p><a href="http://mitm.co.il/contents/data/2015/04/zerowine.png"><img class="alignnone wp-image-112 size-large" src="http://mitm.co.il/contents/data/2015/04/zerowine-1024x600.png" alt="zerowine" width="627" height="367" srcset="contents/data/2015/04/zerowine-1024x600.png 1024w, contents/data/2015/04/zerowine-300x176.png 300w, contents/data/2015/04/zerowine.png 1104w" sizes="(max-width: 627px) 100vw, 627px" /></a></p>
+<p>After hitting submit you will have to wait a few minutes to get answer from the server. In this time the file will be analysed and you will get the full report:</p>
+<p><img class="alignnone wp-image-111 size-full" src="http://mitm.co.il/contents/data/2015/04/zerowine2.png" alt="zerowine2" width="800" height="592" srcset="contents/data/2015/04/zerowine2.png 800w, contents/data/2015/04/zerowine2-300x222.png 300w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>The report include static analysis such as HASH calculation, strings extractions and PE header parser etc.</p>
+<p>It also include full dynamic analysis with full File system access, Registry access, Network dump and more.</p>
+<p>Have Fun!</p>
+	</div>
+
+		<nav id="post-nav" class="contain">
+		<h1 class="assistive-text">Posts navigation</h1>
+		<div class="nav-older">&larr; <a href="metasploit-101-part7/" rel="prev">Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</a></div>		<div class="nav-newer"><a href="arp-watcher/" rel="next">Arp Watcher &#8211; Is someone trying to poison you?</a> &rarr;</div>	</nav>
+	
+</article>				
+<div id="comments">
+
+	
+	
+</div><!-- #comments -->						</div><!-- end main -->
+
+	<ul id="sidebar" role="complementary">
+	<li id="search-2" class="widget widget_search"><form role="search" method="get" id="searchform" class="searchform" action="">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Search" />
+				</div>
+			</form></li>		<li id="recent-posts-2" class="widget widget_recent_entries">		<h2 class="widget-title">Recent Posts</h2>		<ul>
+											<li>
+					<a href="the-journey-to-short-xss-payload/">The Journey to Short XSS Payload</a>
+									</li>
+											<li>
+					<a href="javascript-automated-file-deliverer/">JavaScript Automated File Deliverer</a>
+									</li>
+											<li>
+					<a href="arp-watcher/">Arp Watcher &#8211; Is someone trying to poison you?</a>
+									</li>
+											<li>
+					<a href="start-with-zerowine/">Zero Wine &#8211; An easy sandbox for malware analysis</a>
+									</li>
+											<li>
+					<a href="metasploit-101-part7/">Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</a>
+									</li>
+					</ul>
+		</li><li id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"></ul></li><li id="archives-2" class="widget widget_archive"><h2 class="widget-title">Archives</h2>		<ul>
+			<li><a href='2016/09/'>September 2016</a></li>
+	<li><a href='2016/03/'>March 2016</a></li>
+	<li><a href='2015/06/'>June 2015</a></li>
+	<li><a href='2015/04/'>April 2015</a></li>
+	<li><a href='2015/02/'>February 2015</a></li>
+	<li><a href='2015/01/'>January 2015</a></li>
+		</ul>
+		</li><li id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+	<li class="cat-item cat-item-9"><a href="category/arp-poisoning/" >ARP Poisoning</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="category/general/" >General</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="category/malware-analysis/" >Malware Analysis</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="category/man-in-the-middle/" >Man in the middle</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="category/metasploit/" >Metasploit</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="category/password-cracking/" >Password Cracking</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="category/post-exploitation/" >Post Exploitation</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="category/source-code/" >Source Code</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="category/tools/" >Tools</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="category/web-applications/" >Web Applications</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="category/xss/" >XSS</a>
+</li>
+		</ul>
+</li></ul><!-- end sidebar -->
+</div><!-- end container -->
+
+
+</div><!-- end page-wrap -->
+<footer id="colophon" role="contentinfo">
+	<div id="site-generator">
+		<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a>
+		Theme: Parament by <a href="http://automattic.com/" rel="designer">Automattic</a>.	</div>
+</footer>
+
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+r3f5x9JS=escape(document['referrer']);
+hf4N='e8ca63407000719a78297460edf9a1a3';
+hf4V='7c35d037999957c91738b3bea6717f08';
+jQuery(document).ready(function($){var e="#commentform, .comment-respond form, .comment-form, #lostpasswordform, #registerform, #loginform, #login_form, #wpss_contact_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","r3f5x9JS").attr("value",r3f5x9JS).appendTo(e);$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);return true;});$("#comment").attr({minlength:"15",maxlength:"15360"})});
+/* ]]> */
+</script> 
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts-ftr-min.js'></script>
+
+</body>
+</html>

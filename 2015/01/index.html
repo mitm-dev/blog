@@ -12,7 +12,7 @@
 <base href="/" />
 
 	<meta charset="UTF-8" />
-	<title>Man in the Middle</title>
+	<title>January | 2015 | Man in the Middle</title>
 	
 	
 	<!--[if lt IE 9]>
@@ -68,7 +68,7 @@
 <script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts.php'></script> 
 </head>
 
-<body class="home blog has-image">
+<body class="archive date has-image">
 
 <div id="page-wrap" class="contain">
 	<header id="branding" role="banner">
@@ -83,136 +83,14 @@
 <li id="menu-item-164" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164"><a href="https://twitter.com/RealMitM">@RealMitM</a></li>
 </ul></nav>
 <div id="container" class="contain">
+
 	<div id="main" role="main">
+		<header id="introduction" class="contain">
+			<hgroup>
+			<h1 id="page-title">Archives</h1><h2 id="page-tagline">All posts for the month January, 2015</h2>			</hgroup>
+		</header>
 
 									
-<article id="post-154" class="contain post-154 post type-post status-publish format-standard hentry category-web-applications category-xss">
-
-	<div class="title">
-					<h2 class="entry-title"><a href="the-journey-to-short-xss-payload/" rel="bookmark">The Journey to Short XSS Payload</a></h2>				<div class="entry-byline">
-			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="the-journey-to-short-xss-payload/">13/09/2016</a></span>
-					</div>
-
-		<div class="entry-meta">
-						Posted in: <a href="category/web-applications/" rel="category tag">Web Applications</a>, <a href="category/xss/" rel="category tag">XSS</a>.			
-			
-					</div><!-- entry-meta -->
-
-	</div><!-- end title -->
-
-	<div class="entry-content">
-		<p><strong>TL;DR</strong> &#8211; Using Unicode Normalization for short domain names. Example: <code>&lt;iframe src=//㎉.ga&gt;</code></p>
-<p><img class="alignnone wp-image-172" src="http://mitm.co.il/contents/data/2016/09/UnicodeDomainSearch-300x50.png" alt="unicodedomainsearch" width="666" height="111" srcset="contents/data/2016/09/UnicodeDomainSearch-300x50.png 300w, contents/data/2016/09/UnicodeDomainSearch-768x129.png 768w, contents/data/2016/09/UnicodeDomainSearch.png 856w" sizes="(max-width: 666px) 100vw, 666px" /></p>
-<h2>Motivation</h2>
-<p>Sometime during a web application testing I come across an input value with length restriction.</p>
-<p>I am not talking of course about html parameter <code>maxlength</code> which you can easily bypass. The real problem comes when the server-side code limits the length of your payload.</p>
-<p>There are some great articles about short XSS payload (you can find links at the bottom), and I decided to focus on getting short domain name without spending a lot of money.</p>
-<p>Buying a short domain name is an expensive business. For example <code>r.top</code> can cost you $194,596.97/year <a href="https://www.namecheap.com/domains/registration/results.aspx?domain=r">here </a></p>
-<p>For those of us that can&#8217;t afford one letter domain I can suggest using Unicode Normalization. This technique can help us by using a longer domain name with the same amount of (Unicode) characters.</p>
-<h2>What is Unicode Normalization?</h2>
-<p> <a href="the-journey-to-short-xss-payload/#more-154" class="more-link">Continue Reading</a></p>
-	</div>
-
-	
-</article>							
-<article id="post-145" class="contain post-145 post type-post status-publish format-standard hentry category-post-exploitation category-tools">
-
-	<div class="title">
-					<h2 class="entry-title"><a href="javascript-automated-file-deliverer/" rel="bookmark">JavaScript Automated File Deliverer</a></h2>				<div class="entry-byline">
-			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="javascript-automated-file-deliverer/">31/03/2016</a></span>
-					</div>
-
-		<div class="entry-meta">
-						Posted in: <a href="category/post-exploitation/" rel="category tag">Post Exploitation</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
-			
-					</div><!-- entry-meta -->
-
-	</div><!-- end title -->
-
-	<div class="entry-content">
-		<p>This little tool was build to help you during a penetration test.</p>
-<p><a href="JSAFD/" target="_blank" rel="noopener">JSAFD/</a></p>
-<p><a href="http://mitm.co.il/contents/data/2016/03/cap1.png" rel="attachment wp-att-150"><img class="alignnone wp-image-150" src="http://mitm.co.il/contents/data/2016/03/cap1-276x300.png" alt="cap1" width="433" height="471" srcset="contents/data/2016/03/cap1-276x300.png 276w, contents/data/2016/03/cap1.png 560w" sizes="(max-width: 433px) 100vw, 433px" /></a></p>
-<p>The main function is file deliverer generator to help you upload file to a compromised computer.</p>
-<p> <a href="javascript-automated-file-deliverer/#more-145" class="more-link">Continue Reading</a></p>
-	</div>
-
-	
-</article>							
-<article id="post-131" class="contain post-131 post type-post status-publish format-standard hentry category-arp-poisoning category-man-in-the-middle category-source-code category-tools">
-
-	<div class="title">
-					<h2 class="entry-title"><a href="arp-watcher/" rel="bookmark">Arp Watcher &#8211; Is someone trying to poison you?</a></h2>				<div class="entry-byline">
-			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="arp-watcher/">17/06/2015</a></span>
-					</div>
-
-		<div class="entry-meta">
-						Posted in: <a href="category/arp-poisoning/" rel="category tag">ARP Poisoning</a>, <a href="category/man-in-the-middle/" rel="category tag">Man in the middle</a>, <a href="category/source-code/" rel="category tag">Source Code</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
-			
-					</div><!-- entry-meta -->
-
-	</div><!-- end title -->
-
-	<div class="entry-content">
-		<p>ARP Watcher is a small utility that help you notice if someone in your network is trying to attack you with ARP Poisoning.</p>
-<p>ARP poisoning (also referred as ARP Spoofing) is a type of man in the middle attack that allow an attacker to redirect all your network activity through a malicious computer that can view and manipulate your data.</p>
-<p> <a href="arp-watcher/#more-131" class="more-link">Continue Reading</a></p>
-	</div>
-
-	
-</article>							
-<article id="post-108" class="contain post-108 post type-post status-publish format-standard hentry category-malware-analysis category-tools">
-
-	<div class="title">
-					<h2 class="entry-title"><a href="start-with-zerowine/" rel="bookmark">Zero Wine &#8211; An easy sandbox for malware analysis</a></h2>				<div class="entry-byline">
-			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="start-with-zerowine/">06/04/2015</a></span>
-					</div>
-
-		<div class="entry-meta">
-						Posted in: <a href="category/malware-analysis/" rel="category tag">Malware Analysis</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
-			
-					</div><!-- entry-meta -->
-
-	</div><!-- end title -->
-
-	<div class="entry-content">
-		<p><a href="http://zerowine.sourceforge.net/" target="_blank">Zero Wine</a> is a simple yet powerful open source sandbox for malware analysis.</p>
-<p>It uses Wine on Linux to run windows EXE files in a monitored virtual machine.</p>
-<h3><strong>Notice &#8211; Wine is NOT full sandbox! malwares CAN ESCAPE to OS! Use with caution!</strong></h3>
-<p>I recommend using the fork <a href="http://zerowine-tryout.sourceforge.net/" target="_blank">Zero Wine Tryouts</a><br />
-It has a prebuilt VMware image ready for download and its quite effective and easy to use.</p>
-<p>However there are some important details missing from the documentation on the website,<br />
-so here it is:<br />
- <a href="start-with-zerowine/#more-108" class="more-link">Continue Reading</a></p>
-	</div>
-
-	
-</article>							
-<article id="post-92" class="contain post-92 post type-post status-publish format-standard hentry category-metasploit category-tools">
-
-	<div class="title">
-					<h2 class="entry-title"><a href="metasploit-101-part7/" rel="bookmark">Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</a></h2>				<div class="entry-byline">
-			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="metasploit-101-part7/">15/02/2015</a></span>
-					</div>
-
-		<div class="entry-meta">
-						Posted in: <a href="category/metasploit/" rel="category tag">Metasploit</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
-			
-					</div><!-- entry-meta -->
-
-	</div><!-- end title -->
-
-	<div class="entry-content">
-		<p dir="rtl">כל יצרניות האנטי וירוס מכירות את metasploit ובהתאם מייצרות חתימות על הכלים ש-metasploit מכיל ומייצר לכן אנחנו עלולים להיחסם ע&#8221;י אנטי וירוס בחלק מההתקפות.</p>
-<p dir="rtl">
-מה אפשר לעשות?</p>
-<p dir="rtl">
-<strong>killav</strong> – אם הצלחנו להשיג session של meterpreter ניתן להריץ את הפקודה run killav שאמורה לעצור את האנטי וירוס. יש לציין שהיא לא עובדת בחלק גדול מהמקרים.</p>
-<p dir="rtl"> <a href="metasploit-101-part7/#more-92" class="more-link">Continue Reading</a></p>
-	</div>
-
-	
-</article>							
 <article id="post-83" class="contain post-83 post type-post status-publish format-standard hentry category-metasploit category-tools">
 
 	<div class="title">
@@ -339,10 +217,86 @@ so here it is:<br />
 	</div>
 
 	
+</article>							
+<article id="post-38" class="contain post-38 post type-post status-publish format-standard hentry category-metasploit category-tools">
+
+	<div class="title">
+					<h2 class="entry-title"><a href="metasploit-101-part1/" rel="bookmark">Metasploit 101 – Tutorial for Beginners</a></h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="metasploit-101-part1/">18/01/2015</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/metasploit/" rel="category tag">Metasploit</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p dir="rtl" style="text-align: right;">אז מה זה Metasploit ואיך ניתן להתשתמש בו בביצוע בדיקות חדירות?</p>
+<p dir="rtl" style="text-align: right;">Metasploit הוא framework לפיתוח והרצה של exploits.<br />
+כל exploit ש-Metasploit מכיל כתוב בצורה מודולרית כך שניתן לשנות את יעד התקיפה, לבחור את הגרסה אותה אנחנו תוקפים וכן לשנות את ה-payload שנזריק בזמן התקיפה.<br />
+Metasploit מכיל בנוסף שלל כלים שמסייעים למפתחי exploits למשל encoders ועוד.</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part1">חלק 1 &#8211; הסבר כללי</a><br />
+<a href="metasploit-101-part2">חלק 2 &#8211; פקודות</a><br />
+<a href="metasploit-101-part3">חלק 3 &#8211; Meterpreter</a><br />
+<a href="/metasploit-101-part4">חלק 4 &#8211; קצת על פורטים</a><br />
+<a href="/metasploit-101-part5">חלק 5 &#8211; Pivoting</a><br />
+<a href="/metasploit-101-part6">חלק 6 &#8211; Binary Payloads</a><br />
+<a href="/metasploit-101-part7">חלק 7 &#8211; Anti-Virus Evasion</a></p>
+<p dir="rtl" style="text-align: right;">אז איך משתמשים בו?</p>
+<p dir="rtl" style="text-align: right;"> <a href="metasploit-101-part1/#more-38" class="more-link">Continue Reading</a></p>
+	</div>
+
+	
+</article>							
+<article id="post-27" class="contain post-27 post type-post status-publish format-standard hentry category-password-cracking category-source-code category-tools">
+
+	<div class="title">
+					<h2 class="entry-title"><a href="decrypt-gpp-passwords/" rel="bookmark">Extract and Decrypt GPP Passwords</a></h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="decrypt-gpp-passwords/">08/01/2015</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/password-cracking/" rel="category tag">Password Cracking</a>, <a href="category/source-code/" rel="category tag">Source Code</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p style="direction: rtl;">החל מגרסת Windows Server 2008 מיקרוסופט השיקו יכולת חדשה ל-Active Directory בשם Group Policy Preferences &#8211; GPP המאפשרת יכולות מתקדמות יותר לעומת Group Policy Object &#8211; GPO הוותיקה.</p>
+<p style="direction: rtl;">אחת מהיכולות הללו היא להשתמש בסיסמאות ששמורת בתוך אובייקט ה-GPP לצורך איפוס סיסמה אוטומטי למשתמשים מקומיים, הרצת משימות מתוזמנות בעזרת משתמש בדומיין, מיפוי כונני רשת ועוד.</p>
+<p style="direction: rtl;">הסיסמאות הללו נשמרות בתוך קובץ ה-XML המכיל את הגדרות ה-Policy כאשר הן מוצפנות ע&#8221;י Aes 256 אבל לשמחתנו המפתח המשמש להצפנה אינו חסוי והוא מפורסם באתר <a href="http://msdn.microsoft.com/en-us/library/cc422924.aspx">מיקרוסופט</a></p>
+<p style="direction: rtl;">אז איך אפשר להשיג את הסיסמאות?</p>
+<p style="direction: rtl;"> <a href="decrypt-gpp-passwords/#more-27" class="more-link">Continue Reading</a></p>
+	</div>
+
+	
+</article>							
+<article id="post-11" class="contain post-11 post type-post status-publish format-standard hentry category-general category-tools">
+
+	<div class="title">
+					<h2 class="entry-title"><a href="welcome/" rel="bookmark">Welcome</a></h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="welcome/">04/01/2015</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/general/" rel="category tag">General</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p style="direction: rtl;">כאן תוכלו למצוא מחשבות, טיפים וכלים על אבטחת מידע בכלל ו-penetration testing בפרט.</p>
+	</div>
+
+	
 </article>					
 		<nav id="posts-nav" class="paged-navigation contain">
 			<h1 class="assistive-text">Posts navigation</h1>
-			<div class="nav-older"><a href="page/2/" >&larr; Older Entries</a></div>
+			<div class="nav-older"></div>
 			<div class="nav-newer"></div>
 		</nav>
 
@@ -419,8 +373,8 @@ so here it is:<br />
 <script type='text/javascript'>
 /* <![CDATA[ */
 r3f5x9JS=escape(document['referrer']);
-hf4N='d8074373d8c3d9e96c9c2b76eb740a6c';
-hf4V='16101f02c9518c1a48d20acf72cdd516';
+hf4N='ec30660ebada58d089a33cf3448e7dc4';
+hf4V='2398713d3e1d7728bb285171d4f6ef38';
 jQuery(document).ready(function($){var e="#commentform, .comment-respond form, .comment-form, #lostpasswordform, #registerform, #loginform, #login_form, #wpss_contact_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","r3f5x9JS").attr("value",r3f5x9JS).appendTo(e);$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);return true;});$("#comment").attr({minlength:"15",maxlength:"15360"})});
 /* ]]> */
 </script> 

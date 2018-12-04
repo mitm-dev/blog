@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html id="ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8) ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+<base href="/" />
+
+	<meta charset="UTF-8" />
+	<title>Metasploit 101 – Part 4 &#8211; Ports Ports Ports | Man in the Middle</title>
+	
+	
+	<!--[if lt IE 9]>
+	<script src="contents/ui/theme/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+	
+
+
+
+<link rel='stylesheet' id='parament-css'  href='contents/ui/theme/style.css' type='text/css' media='all' />
+<script type='text/javascript' src='inc/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='inc/js/jquery/jquery-migrate.min.js'></script>
+
+
+
+
+
+
+
+
+
+		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+			<style type="text/css">
+			#branding {
+			overflow: hidden;
+			position: relative;
+			width: 820px;
+			height: 164px;
+		}
+		#site-title,
+		#site-description {
+			position: relative;
+			margin-left: 50px;
+			z-index: 2;
+		}
+		#site-title {
+			margin-top: 60px;
+		}
+		#site-description {
+			display: block;
+		}
+		#header-image {
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 820px;
+			height: 164px;
+			z-index: 1;
+		}
+			#site-title,
+		#site-description {
+			position: absolute;
+			clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+			clip: rect(1px, 1px, 1px, 1px);
+		}
+		</style>
+	<style type="text/css" id="syntaxhighlighteranchor"></style>
+
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts.php'></script> 
+</head>
+
+<body class="post-template-default single single-post postid-65 single-format-standard has-image">
+
+<div id="page-wrap" class="contain">
+	<header id="branding" role="banner">
+		<h1 id="site-title"><a href="">Man in the Middle</a></h1>
+		
+					<a id="header-image" href=""><img src="contents/data/2015/02/logo.png" alt="" /></a>
+			</header><!-- #branding -->
+
+	<nav id="menu" role="navigation"><ul id="primary-menu" class="menu"><li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13"><a title="Useful Free Tools for Penetration Testing" href="tools-for-pentest/">Tools</a></li>
+<li id="menu-item-24" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24"><a href="useful-links/">Useful Links</a></li>
+<li id="menu-item-26" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-26"><a href="https://github.com/mitm-dev">mitm on GitHub</a></li>
+<li id="menu-item-164" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164"><a href="https://twitter.com/RealMitM">@RealMitM</a></li>
+</ul></nav>
+<div id="container" class="contain">
+	<div id="main" role="main">
+													
+<article id="post-65" class="contain post-65 post type-post status-publish format-standard hentry category-metasploit category-tools has-byline">
+
+	<div class="title">
+					<h2 class="entry-title">Metasploit 101 – Part 4 &#8211; Ports Ports Ports</h2>				<div class="entry-byline">
+			<span>Posted by <a href="author/mitm/" title="View all posts by mitm">mitm</a> on <a href="metasploit-101-part4/">19/01/2015</a></span>
+					</div>
+
+		<div class="entry-meta">
+						Posted in: <a href="category/metasploit/" rel="category tag">Metasploit</a>, <a href="category/tools/" rel="category tag">Tools</a>.			
+			
+					</div><!-- entry-meta -->
+
+	</div><!-- end title -->
+
+	<div class="entry-content">
+		<p dir="rtl" style="text-align: right;">חלק מה-payloads שב-Metasploit יוצרים לנו session אינטרקטיבי מול השרת המותקף. ה-session יכול להיות של meterpreter או shell רגיל אבל בכל מקרה ה-payload דורש פורט פתוח.</p>
+<p dir="rtl" style="text-align: right;">יש שתי שיטות בהן נוכל להקים session:</p>
+<p dir="rtl" style="text-align: right;">1. Bind – ה-exploit שירוץ על השרת המותקף יתחיל להאזין לפורט שהגדרנו לו, והמחשב שלנו יתחבר לשרת המותקף</p>
+<p dir="rtl" style="text-align: right;">2. Reverse Connection / Reverse Shell – המחשב שלנו יאזין לפורט שהגדרנו וה-exploit שירוץ על השרת המותקף יתחבר למחשב שלנו. היתרון בשיטה זו היא שלעיתים קרובות השרת פתוח למשתמשים ביותר פורטים מאשר המשתמשים פתוחים לשרת.</p>
+<p dir="rtl" style="text-align: right;">איך בוחרים פורט כזה?</p>
+<p dir="rtl" style="text-align: right;"><span id="more-65"></span>המטרה שלנו היא למצוא פורט שפתוח ב-FW אבל אין אף תוכנה שמאזינה עליו (כדי למנוע התנגשויות). בכלי הסריקה (כמו nmap) פורט כזה יופיע כ-closed (רק להזכיר – open משמע פורט פתוח שיש מי שמאזין עליו, ו-filtered משמע חסום ב-FW)</p>
+<p dir="rtl" style="text-align: right;">נוכל לסרוק את השרת ולחפש פורטים שהם closed. אם מצאנו פורט כזה אנחנו נבחר payload מסוג &#8220;bind_tcp&#8221; או &#8220;bind_udp&#8221; ואת מספר הפורט נגדיר כ-LPORT.</p>
+<p dir="rtl" style="text-align: right;">טיפ: לפעמים יהיו פתוחים פורטים גבוהים (40,000 ומעלה) אז לא לשכוח לבדוק אותם.</p>
+<p dir="rtl" style="text-align: right;">אם לא מצאנו ננסה לבצע סריקה הפוכה – מהשרת נסרוק את המחשב שלנו ושוב נחפש פורט closed. אם מצאנו נבחר payload מסוג &#8220;reverse_tcp&#8221; או &#8220;reverse_udp&#8221; ואת מספר הפורט נגדיר כ-LPORT. במקרה זה יש גם להגדיר את LHOST בתור המחשב שלנו.</p>
+<p dir="rtl" style="text-align: right;"><span style="text-decoration: underline;">טיפ:</span> כדי לבצע סריקת רשת לא צריך הרשאות גבוהות. אם השגנו משתמש רגיל בשרת זה מספיק לנו בשביל לסרוק ולחפש פורטים פתוחים.</p>
+<p dir="rtl" style="text-align: right;">אם לא ניתן לבצע סריקה מהשרת (כי אין לנו דריסת רגל בשרת) נוכל להשתמש ב-reverse_tcp_allports מה שינסה להתחבר אלינו בכל פורט אפשרי (1-65535). זה ייקח זמן, אבל אם יש פורט כלשהוא פתוח אנחנו נקבל session</p>
+<p dir="rtl" style="text-align: right;">אם אין אף פורט פתוח שאנחנו יכולים להשתמש בו, ניאלץ להריץ payload שלא פותח session אינטרקטיבי – למשל payload/windows/exec שמפעיל קובץ ריצה על השרת או payload/cmd/windows/adduser שמוסיף יוזר.</p>
+<p dir="rtl" style="text-align: right;"><a href="/metasploit-101-part5">לחלק הבא – Pivoting</a></p>
+	</div>
+
+		<nav id="post-nav" class="contain">
+		<h1 class="assistive-text">Posts navigation</h1>
+		<div class="nav-older">&larr; <a href="metasploit-101-part3/" rel="prev">Metasploit 101 – Part 3 &#8211; Meterpreter</a></div>		<div class="nav-newer"><a href="metasploit-101-part5/" rel="next">Metasploit 101 – Part 5 &#8211; Pivoting</a> &rarr;</div>	</nav>
+	
+</article>				
+<div id="comments">
+
+	
+	
+</div><!-- #comments -->						</div><!-- end main -->
+
+	<ul id="sidebar" role="complementary">
+	<li id="search-2" class="widget widget_search"><form role="search" method="get" id="searchform" class="searchform" action="">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Search" />
+				</div>
+			</form></li>		<li id="recent-posts-2" class="widget widget_recent_entries">		<h2 class="widget-title">Recent Posts</h2>		<ul>
+											<li>
+					<a href="the-journey-to-short-xss-payload/">The Journey to Short XSS Payload</a>
+									</li>
+											<li>
+					<a href="javascript-automated-file-deliverer/">JavaScript Automated File Deliverer</a>
+									</li>
+											<li>
+					<a href="arp-watcher/">Arp Watcher &#8211; Is someone trying to poison you?</a>
+									</li>
+											<li>
+					<a href="start-with-zerowine/">Zero Wine &#8211; An easy sandbox for malware analysis</a>
+									</li>
+											<li>
+					<a href="metasploit-101-part7/">Metasploit 101 &#8211; Part 7 &#8211; Anti-Virus Evasion</a>
+									</li>
+					</ul>
+		</li><li id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">Recent Comments</h2><ul id="recentcomments"></ul></li><li id="archives-2" class="widget widget_archive"><h2 class="widget-title">Archives</h2>		<ul>
+			<li><a href='2016/09/'>September 2016</a></li>
+	<li><a href='2016/03/'>March 2016</a></li>
+	<li><a href='2015/06/'>June 2015</a></li>
+	<li><a href='2015/04/'>April 2015</a></li>
+	<li><a href='2015/02/'>February 2015</a></li>
+	<li><a href='2015/01/'>January 2015</a></li>
+		</ul>
+		</li><li id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>		<ul>
+	<li class="cat-item cat-item-9"><a href="category/arp-poisoning/" >ARP Poisoning</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="category/general/" >General</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="category/malware-analysis/" >Malware Analysis</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="category/man-in-the-middle/" >Man in the middle</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="category/metasploit/" >Metasploit</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="category/password-cracking/" >Password Cracking</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="category/post-exploitation/" >Post Exploitation</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="category/source-code/" >Source Code</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="category/tools/" >Tools</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="category/web-applications/" >Web Applications</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="category/xss/" >XSS</a>
+</li>
+		</ul>
+</li></ul><!-- end sidebar -->
+</div><!-- end container -->
+
+
+</div><!-- end page-wrap -->
+<footer id="colophon" role="contentinfo">
+	<div id="site-generator">
+		<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a>
+		Theme: Parament by <a href="http://automattic.com/" rel="designer">Automattic</a>.	</div>
+</footer>
+
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+r3f5x9JS=escape(document['referrer']);
+hf4N='083a5fcd4a3bf45eddb84bd312947278';
+hf4V='8522c0bfedd5843e566ca5bb97a71d23';
+jQuery(document).ready(function($){var e="#commentform, .comment-respond form, .comment-form, #lostpasswordform, #registerform, #loginform, #login_form, #wpss_contact_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","r3f5x9JS").attr("value",r3f5x9JS).appendTo(e);$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);return true;});$("#comment").attr({minlength:"15",maxlength:"15360"})});
+/* ]]> */
+</script> 
+<script type='text/javascript' src='contents/lib/wp-spamshield/js/jscripts-ftr-min.js'></script>
+
+</body>
+</html>
